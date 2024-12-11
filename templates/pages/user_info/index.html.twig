@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs 🥑 {% endblock %}
+
+{% block body %}
+
+<div class="container-fluid mb-4 mr-4">
+    <h1 class="ml-4 mt-4">Liste des utilisateurs</h1>
+
+{% for messages in app.flashes('success') %}
+    <div class="alert alert-dismissible alert-success ml-4 mt-4">
+        {{ messages }}
+    </div>
+{% endfor %}
+{% for message in app.flashes('warning') %}
+    <div class="alert alert-warning mt-4">
+        {{ message }}
+    </div>
+{% endfor %}
+
+    {% if not user_infos is same as ([]) %}
+    <div class="count ml-4 mt-4">
+        <h5> Il y a {{ user_infos.getTotalItemCount }} Utilisateurs enregistrés </h5>
+    </div>
+    {% endif %}
+<div class="table-responsive-md">
+    <table class="table mt-4 ml-4 blue table-bordered">
+        <thead>
+            <tr class="table-active">
+                <th scope="row">Id</th>
+                <th>Roles</th>
+                <th>Direction</th>
+                <th>PostalCode</th>
+                <th>Town</th>
+                <th>Country</th>
+                <th>Tel</th>
+                <th>Nom</th>
+                <th>Pseudonyme</th>
+                <th>mail</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+{# verifier la doc de twig pour loop #}
+        {% for user_info in user_infos %}
+        {% set user = users[loop.index0] %}
+
+            <tr class="table-active">
+                <th scope="row">{{ user_info.id }}</td>
+                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                <td>{{ user_info.direction }}</td>
+                <td>{{ user_info.postalCode }}</td>
+                <td>{{ user_info.town }}</td>
+                <td>{{ user_info.country }}</td>
+                <td>{{ user_info.tel }}</td> 
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.pseudonym }}</td>
+                    <td>{{ user.email }}</td> 
+               
+                <td>
+                    <a href="{{ path('app_user_info_show', {'id': user_info.id}) }}" class="btn btn-primary mt-4 mr-4">Voir</a>
+                    <a href="{{ path('app_user_info_edit', {'id': user_info.id}) }}" class="btn btn-warning mt-4">Modifier</a>
+                </td>
+            </tr>
+            
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+ 
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+<div class="containerpagination mt-4 mb-5">
+  <ul class="pagination">
+    <li class="mb-3">
+      <a href="#" class="previous"> {{ knp_pagination_render(users, '@KnpPaginator/Pagination/sliding.html.twig') }}</a>  {#{{ knp_pagination_render(users) }}#}
+    </li>
+  </ul>
+</div>
+
+    <a href="{{ path('app_user_new') }}"
+    class="buttonbuttonnew ml-2 mt-5 mb-4">Creation</a>
+</div>
+{% endblock %}
